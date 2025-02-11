@@ -9,6 +9,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const [emailId, setEmail] = useState("raj@gmail.com");
   const [password, setPassword] = useState("GhostGopal@123");
+  const [error, seterror] = useState("");
   const navigation = useNavigate();
 
   const loginFormHandler = async () => {
@@ -28,7 +29,8 @@ const Login = () => {
       setEmail("");
       setPassword("");
     } catch (err) {
-      console.error("Error logging in:", err.message);
+      seterror(err?.response?.data);
+      console.error("Error logging in:", err?.response?.data);
     }
   };
 
@@ -77,6 +79,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)} // ✅ Fixed: Corrected event handling
           />
         </label>
+        {error && <p className="text-red-500 text-xs">{error}</p>}
 
         {/* Submit Button */}
         <button

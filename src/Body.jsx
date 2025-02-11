@@ -12,13 +12,14 @@ const Body = () => {
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
   const profile = async () => {
-    if (Object.keys(user).length === 0) {
+    if (Object.keys(user).length <= 0) {
       console.log("no user");
       try {
         const userProfile = await axios.get(BaseUrl + "/profile/view", {
           withCredentials: true,
         });
         dispatch(addUser(userProfile.data));
+        console.log(Object.keys(user).length > 0);
       } catch (error) {
         navigate("/login");
         console.log(error.message);
