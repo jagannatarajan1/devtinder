@@ -1,5 +1,5 @@
 const FeedCard = ({ user }) => {
-  console.log(user); // Debugging (Make sure user exists)
+  console.log(user);
 
   const {
     firstName = "",
@@ -7,9 +7,11 @@ const FeedCard = ({ user }) => {
     emailId = "",
     profilePic = "",
     skills = [],
+    about = "",
+    age = "",
   } = user || {};
 
-  console.log(firstName, lastName, emailId, profilePic); // Removed password from logs
+  console.log(firstName, lastName, emailId, profilePic, about, age); // Removed password from logs
 
   return (
     <div className="flex justify-center">
@@ -17,17 +19,22 @@ const FeedCard = ({ user }) => {
         <figure>
           <img
             src={
-              //   profilePic ||
+              profilePic ||
               "https://i.pinimg.com/736x/5e/72/eb/5e72ebebbd623f2cd8a6d855d31ada75.jpg"
             }
             alt="person"
           />
         </figure>
         <div className="card-body">
-          <h2 className="card-title">{firstName + " " + lastName}</h2>
+          <h2 className="card-title">
+            {firstName + " " + lastName} {age}
+          </h2>
+          <p>{about}</p>
 
           {/* Displaying skills properly if it's an array */}
-          <p>{skills.length > 0 ? skills.join(", ") : "No skills listed"}</p>
+          <p>
+            Skills :{skills.length > 0 ? skills.join(", ") : "No skills listed"}
+          </p>
 
           <div className="card-actions justify-center">
             <button className="btn btn-primary px-10">Interested</button>

@@ -7,7 +7,7 @@ import { BaseUrl } from "../utils/constance";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [emailId, setEmail] = useState("raj@gmail.com");
+  const [emailId, setEmail] = useState("emily@gmail.com");
   const [password, setPassword] = useState("GhostGopal@123");
   const [error, seterror] = useState("");
   const navigation = useNavigate();
