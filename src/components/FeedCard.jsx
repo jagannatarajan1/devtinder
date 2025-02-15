@@ -1,7 +1,28 @@
+import axios from "axios";
+import { BaseUrl } from "../utils/constance";
+import { useDispatch } from "react-redux";
+import { removeFeed } from "../store/feedSlice";
+
 const FeedCard = ({ user }) => {
+  const dispatch = useDispatch();
   console.log(user);
 
+  const handleFeed = async (id, useraction) => {
+    try {
+      await axios.post(
+        `${BaseUrl}/request/${useraction}/${id}`,
+        {},
+        { withCredentials: true }
+      );
+      dispatch(removeFeed(id));
+      console.log(`Request ${useraction} successful for ID: ${id}`);
+    } catch (error) {
+      console.error("Error handling feed: ", error);
+    }
+  };
+
   const {
+    _id = "",
     firstName = "",
     lastName = "",
     emailId = "",
@@ -11,7 +32,7 @@ const FeedCard = ({ user }) => {
     age = "",
   } = user || {};
 
-  console.log(firstName, lastName, emailId, profilePic, about, age); // Removed password from logs
+  console.log(firstName, lastName, emailId, profilePic, about, age, _id); // Removed password from logs
 
   return (
     <div className="flex justify-center">
@@ -37,8 +58,18 @@ const FeedCard = ({ user }) => {
           </p>
 
           <div className="card-actions justify-center">
-            <button className="btn btn-primary px-10">Interested</button>
-            <button className="btn  px-10 bg-red-600">Ignored</button>
+            <button
+              className="btn btn-primary px-10"
+              onClick={() => handleFeed(_id, "interested")}
+            >
+              Interested
+            </button>
+            <button
+              className="btn  px-10 bg-red-600"
+              onClick={() => handleFeed(_id, "ignored")}
+            >
+              Ignored
+            </button>
           </div>
         </div>
       </div>

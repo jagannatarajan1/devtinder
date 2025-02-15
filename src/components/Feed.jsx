@@ -24,7 +24,9 @@ const Feed = () => {
   useEffect(() => {
     feed();
   }, []);
-
+  if (!userfeed) return;
+  if (userfeed.length <= 0)
+    return <p className="text-center p-3"> no user available</p>;
   return (
     <div>
       <FeedCard user={userfeed[0]} />
