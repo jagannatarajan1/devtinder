@@ -11,6 +11,8 @@ const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
+
+  console.log(user);
   const profile = async () => {
     if (Object.keys(user).length <= 0) {
       console.log("no user");

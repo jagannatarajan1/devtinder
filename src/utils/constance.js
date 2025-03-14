@@ -1,1 +1,1 @@
-export const BaseUrl = "https://devtinderbackend-jjzz.onrender.com";
+export const BaseUrl = "http://localhost:4000";
