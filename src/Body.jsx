@@ -15,19 +15,23 @@ const Body = () => {
   console.log(user);
   const profile = async () => {
     if (Object.keys(user).length <= 0) {
-      console.log("no user");
       try {
-        const userProfile = await axios.get(BaseUrl + "/profile/view", {
+        const res = await axios.get(BaseUrl + "/profile/view", {
           withCredentials: true,
         });
-        dispatch(addUser(userProfile.data));
-        console.log(Object.keys(user).length > 0);
+
+        if (res?.data?.firstName) {
+          dispatch(addUser(res.data));
+        } else {
+          throw new Error("Invalid user data");
+        }
       } catch (error) {
+        console.log("Redirecting to login due to error:", error.message);
         navigate("/login");
-        console.log(error.message);
       }
     }
   };
+
   useEffect(() => {
     profile();
     // eslint-disable-next-line

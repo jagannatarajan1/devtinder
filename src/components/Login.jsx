@@ -25,7 +25,9 @@ const Auth = () => {
       const response = await axios.post(BaseUrl + endpoint, payload, {
         withCredentials: true,
       });
+      localStorage.setItem("user", emailId);
 
+      console.log("login", JSON.stringify(emailId));
       dispatch(addUser(response.data));
       navigate(isSignup ? "/profile" : "/");
       setEmail("");
