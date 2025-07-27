@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 const ListOfCard = ({ connection }) => {
   if (!connection || connection.length === 0) {
     return <p className="text-center text-gray-500">No connections found.</p>;
   }
+  console.log("Connection List:", connection);
   return (
     <div className="flex justify-center items-center p-4">
       <ul className="menu bg-base-200 w-full sm:w-3/6 rounded-lg p-2">
@@ -25,6 +27,11 @@ const ListOfCard = ({ connection }) => {
                   </p>
                   <p className="text-gray-500">{ele.about}</p>
                 </div>
+              </div>
+              <div>
+                <Link to={"/chat/" + ele._id}>
+                  <button className="btn btn-primary">Chat</button>
+                </Link>
               </div>
             </div>
           </li>

@@ -9,7 +9,7 @@ import Request from "./components/Request";
 import NotFound from "./components/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Premium from "./components/Premium";
-
+import Chart from "./components/Chart";
 function App() {
   return (
     <BrowserRouter basename="/">
@@ -25,6 +25,7 @@ function App() {
             <Route path="/connections" element={<Connection />} />
             <Route path="/request/receive" element={<Request />} />
             <Route path="/premium" element={<Premium />} />
+            <Route path="/chat/:targetUserId" element={<Chart />} />
           </Route>
         </Route>
 
