@@ -1,80 +1,77 @@
-import axios from "axios";
-import { BaseUrl } from "../utils/constance";
-import { useDispatch } from "react-redux";
-import { removeFeed } from "../store/feedSlice";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import PropTypes from "prop-types";
 
-const FeedCard = ({ user }) => {
-  const dispatch = useDispatch();
-  console.log(user);
+const FeedCard = ({ user, onDecision }) => {
+  const x = useMotionValue(0);
+  const rotate = useTransform(x, [-200, 200], [-20, 20]);
 
-  const handleFeed = async (id, useraction) => {
-    try {
-      await axios.post(
-        `${BaseUrl}/request/${useraction}/${id}`,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeFeed(id));
-      console.log(`Request ${useraction} successful for ID: ${id}`);
-    } catch (error) {
-      console.error("Error handling feed: ", error);
+  const handleDragEnd = (_, info) => {
+    if (!user?._id) return;
+
+    const threshold = 140; // how far to drag before it counts as a swipe
+    if (info.offset.x < -threshold) {
+      // Left swipe → interested
+      onDecision?.("interested", user);
+    } else if (info.offset.x > threshold) {
+      // Right swipe → ignored
+      onDecision?.("ignored", user);
     }
+    // If not past threshold, Framer snaps back automatically
   };
 
+  if (!user) return null;
+
   const {
-    _id = "",
     firstName = "",
     lastName = "",
-    emailId = "",
     profilePic = "",
     skills = [],
     about = "",
     age = "",
-  } = user || {};
-
-  console.log(firstName, lastName, emailId, profilePic, about, age, _id); // Removed password from logs
+  } = user;
 
   return (
-    <div className="flex justify-center">
-      <div className="card bg-base-100 w-96 h-[600px] shadow-xl">
-        <figure>
-          <img
-            src={
-              profilePic ||
-              "https://i.pinimg.com/736x/5e/72/eb/5e72ebebbd623f2cd8a6d855d31ada75.jpg"
-            }
-            alt="person"
-          />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title">
-            {firstName + " " + lastName} {age}
-          </h2>
-          <p>{about}</p>
-
-          {/* Displaying skills properly if it's an array */}
-          <p>
-            Skills :{skills.length > 0 ? skills.join(", ") : "No skills listed"}
-          </p>
-
-          <div className="card-actions justify-center">
-            <button
-              className="btn btn-primary px-10"
-              onClick={() => handleFeed(_id, "interested")}
-            >
-              Interested
-            </button>
-            <button
-              className="btn  px-10 bg-red-600"
-              onClick={() => handleFeed(_id, "ignored")}
-            >
-              Ignored
-            </button>
-          </div>
-        </div>
+    <motion.div
+      className="absolute card bg-base-100 w-96 h-[600px] shadow-xl"
+      style={{ x, rotate }}
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.5}
+      onDragEnd={handleDragEnd}
+    >
+      <figure>
+        <img
+          src={
+            profilePic ||
+            "https://i.pinimg.com/736x/5e/72/eb/5e72ebebbd623f2cd8a6d855d31ada75.jpg"
+          }
+          alt="person"
+          className="w-full h-64 object-cover"
+        />
+      </figure>
+      <div className="card-body">
+        <h2 className="card-title">
+          {firstName + " " + lastName} {age}
+        </h2>
+        <p>{about}</p>
+        <p>
+          Skills: {skills.length > 0 ? skills.join(", ") : "No skills listed"}
+        </p>
       </div>
-    </div>
+    </motion.div>
   );
+};
+FeedCard.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    profilePic: PropTypes.string,
+    skills: PropTypes.arrayOf(PropTypes.string),
+    about: PropTypes.string,
+    age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }),
+  onDecision: PropTypes.func,
 };
 
 export default FeedCard;
