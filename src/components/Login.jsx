@@ -41,8 +41,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-80 lg:w-1/4 max-w-md border p-7 rounded-lg border-gray-500">
+    <div className="flex justify-center items-center h-screen bg-[repeating-linear-gradient(45deg,#F9A8D4,#F9A8D4_10px,#FBCFE8_10px,#FBCFE8_20px)]">
+      {/* <div class="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#F9A8D4,transparent)]"></div> */}
+      <div className="w-80 lg:w-1/4 max-w-md border p-7 rounded-lg border-gray-500 bg-slate-50">
         <h2 className="text-center text-lg font-bold mb-4">
           {isSignup ? "Sign Up" : "Login"}
         </h2>
@@ -89,7 +90,7 @@ const Auth = () => {
         {error && <p className="text-red-500 text-xs">{error}</p>}
         <button
           type="submit"
-          className="border border-1 w-full py-2 mt-2 rounded-md"
+          className="border border-1 w-full py-2 mt-2 rounded-md hover:bg-pink-500 hover:text-white"
           onClick={formHandler}
         >
           {isSignup ? "Sign Up" : "Login"}
@@ -111,3 +112,4 @@ const Auth = () => {
 };
 
 export default Auth;
+

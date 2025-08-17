@@ -34,7 +34,7 @@ const Premium = () => {
         key: razorpayKey,
         amount,
         currency: "INR",
-        name: "Devtinder Premium",
+        name: "Intern Swipe Premium",
         description: "Unlock all premium dating features",
         order_id: orderId,
         prefill: {
@@ -53,7 +53,7 @@ const Premium = () => {
   };
 
   const plan = {
-    name: "Devtinder Premium",
+    name: "Intern Swipe Premium",
     priceLabel: "₹499/month",
     priceDigit: "49900",
     features: [
