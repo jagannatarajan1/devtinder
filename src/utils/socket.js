@@ -5,10 +5,9 @@ export const createSocketConnection = () => {
   //     transports: ["websocket"],
   //     withCredentials: true,
   //   });
-  //   return socket;
   if (location.hostname === "localhost") {
-    return io(BaseUrl);
+    return io(BaseUrl, { transports: ["websocket"] });
   } else {
-    return io("/", { paths: "api/socket.io" });
+    return io("/", { path: "/api/socket.io", transports: ["websocket"] });
   }
 };
