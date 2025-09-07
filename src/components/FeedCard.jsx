@@ -11,10 +11,10 @@ const FeedCard = ({ user, onDecision }) => {
     const threshold = 140; // how far to drag before it counts as a swipe
     if (info.offset.x < -threshold) {
       // Left swipe → interested
-      onDecision?.("interested", user);
+      onDecision?.("ignored", user);
     } else if (info.offset.x > threshold) {
       // Right swipe → ignored
-      onDecision?.("ignored", user);
+      onDecision?.("interested", user);
     }
     // If not past threshold, Framer snaps back automatically
   };
@@ -32,7 +32,7 @@ const FeedCard = ({ user, onDecision }) => {
 
   return (
     <motion.div
-      className="absolute card bg-base-100 w-96 h-[600px] shadow-xl"
+      className=" card bg-base-100 w-96 h-[600px] shadow-xl"
       style={{ x, rotate }}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}

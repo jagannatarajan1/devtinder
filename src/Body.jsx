@@ -12,7 +12,6 @@ const Body = () => {
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
 
-  console.log(user);
   const profile = async () => {
     if (Object.keys(user).length <= 0) {
       try {
@@ -36,10 +35,18 @@ const Body = () => {
     profile();
     // eslint-disable-next-line
   }, []);
+
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar */}
       <NavBar />
-      <Outlet />
+
+      {/* Main content */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
+      {/* Footer */}
       <Footer />
     </div>
   );
