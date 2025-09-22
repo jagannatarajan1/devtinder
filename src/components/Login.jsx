@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addUser } from "../store/userSlice";
@@ -17,8 +17,10 @@ const Auth = () => {
   const [error, setError] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [resendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
 
-  // step 1: signup/login
+  // Step 1: Signup/Login
   const formHandler = async () => {
     try {
       const endpoint = isSignup ? "/signup" : "/login";
@@ -34,9 +36,10 @@ const Auth = () => {
         if (res.data.message?.includes("OTP")) {
           setOtpSent(true);
           setError("");
+          setResendTimer(30);
+          setCanResend(false);
         }
       } else {
-        // login: directly authenticate
         localStorage.setItem("user", emailId);
         dispatch(addUser(res.data.user));
         navigate("/");
@@ -46,7 +49,7 @@ const Auth = () => {
     }
   };
 
-  // step 2: verify OTP (only signup)
+  // Step 2: Verify OTP
   const verifyOtpHandler = async () => {
     try {
       const res = await axios.post(
@@ -63,16 +66,36 @@ const Auth = () => {
     }
   };
 
-  // resend OTP (only signup)
+  // Resend OTP
   const resendOtpHandler = async () => {
     try {
       const res = await axios.post(BaseUrl + "/resend-otp", { emailId });
       alert(res.data.message);
       setError("");
+      setResendTimer(30);
+      setCanResend(false);
     } catch (err) {
       setError(err?.response?.data || "Failed to resend OTP");
     }
   };
+
+  // Timer effect
+  useEffect(() => {
+    let timer;
+    if (!canResend && otpSent) {
+      timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [otpSent, canResend]);
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -142,6 +165,9 @@ const Auth = () => {
             <h2 className="text-center text-lg font-bold mb-4">
               Enter OTP sent to {emailId}
             </h2>
+            <p className="text-xs text-gray-500 mb-2">
+              Sometimes the OTP may appear in your spam/junk folder.
+            </p>
             <input
               className="input input-bordered w-full my-2"
               placeholder="Enter OTP"
@@ -159,10 +185,13 @@ const Auth = () => {
             </button>
 
             <button
-              className="w-full py-2 mt-2 rounded-md bg-gray-200"
-              onClick={resendOtpHandler}
+              className={`w-full py-2 mt-2 rounded-md ${
+                canResend ? "bg-gray-200" : "bg-gray-400 cursor-not-allowed"
+              }`}
+              onClick={canResend ? resendOtpHandler : null}
+              disabled={!canResend}
             >
-              Resend OTP
+              {canResend ? "Resend OTP" : `Resend in ${resendTimer}s`}
             </button>
           </>
         )}

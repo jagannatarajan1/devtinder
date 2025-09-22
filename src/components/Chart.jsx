@@ -76,37 +76,25 @@ const Chat = () => {
 
     // primary incoming handler
     socketRef.current.on("messageReceived", (msg) => {
-      // msg might contain: firstName, lastName, text, timestamp, clientId, serverId, userId...
       setMessages((prev) => {
-        // 1) If server returned clientId for our optimistic message -> replace it
-        if (msg.clientId) {
-          const exists = prev.some((m) => m.clientId === msg.clientId);
-          if (exists) {
+        // 1) If server echoes our own optimistic message → replace it
+        if (msg.userId === userId) {
+          const optimistic = prev.find(
+            (m) => m.text === msg.text && m.pending && m.userId === userId
+          );
+          if (optimistic) {
             return prev.map((m) =>
-              m.clientId === msg.clientId ? { ...m, ...msg, pending: false } : m
+              m === optimistic ? { ...m, ...msg, pending: false } : m
             );
           }
         }
 
-        // 2) Basic dedupe: if the exact serverId already exists, skip
+        // 2) Normal dedupe by serverId
         if (msg.serverId && prev.some((m) => m.serverId === msg.serverId)) {
           return prev;
         }
 
-        // 3) Fallback dedupe: avoid duplicates by text+timestamp+sender
-        if (
-          prev.some(
-            (m) =>
-              m.text === msg.text &&
-              m.firstName === msg.firstName &&
-              m.lastName === msg.lastName &&
-              m.timestamp === msg.timestamp
-          )
-        ) {
-          return prev;
-        }
-
-        // otherwise append
+        // 3) Otherwise append
         return [...prev, msg];
       });
     });
